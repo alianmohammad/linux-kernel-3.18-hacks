@@ -7,6 +7,7 @@
 #include <linux/tick.h>
 #include <linux/mm.h>
 #include <linux/stackprotector.h>
+#include <linux/timekeeping.h>
 
 #include <asm/tlb.h>
 
@@ -155,7 +156,9 @@ use_default:
 	 * This function will block until an interrupt occurs and will take
 	 * care of re-enabling the local interrupts
 	 */
+    printk(KERN_DEFAULT "enter_sleep %llu %d\n", ktime_get(), smp_processor_id());
 	entered_state = cpuidle_enter(drv, dev, next_state);
+    printk(KERN_DEFAULT "exit_sleep %llu %d %d\n", ktime_get(), smp_processor_id(), entered_state);
 
 	/* The cpu is no longer idle or about to enter idle. */
 	idle_set_state(this_rq(), NULL);
